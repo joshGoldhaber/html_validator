@@ -10,6 +10,28 @@ def validate_html(html):
     >>> validate_html('<strong>example')
     False
     '''
+    try:
+        tags = _extract_tags(html)
+    except ValueError:
+        return False
+
+    s = []
+    balanced = True
+    index = 0
+    while index < len(tags) and balanced:
+        tag = tags[index]
+        if not tag.startswith('</'):
+            s.append(tag)
+        else:
+            if len(s) == 0:
+                balanced = False
+            else:
+                top = s.pop()
+                if not _matches(top, tag):
+                    balanced = False
+        index = index + 1
+
+    return balanced and len(s) == 0
 
     # HINT:
     # use the _extract_tags function below to generate a list of html tags without any extra text;
