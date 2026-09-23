@@ -11,6 +11,7 @@ def validate_html(html):
     False
     '''
 
+
     # HINT:
     # use the _extract_tags function below to generate a list of html tags without any extra text;
     # then process these html tags using the balanced parentheses algorithm from the stack.py file.
@@ -43,6 +44,6 @@ def _extract_tags(html):
                 current = None
         elif current is not None:
             current += char
-    if current is not None:
+    if current is not None:             # string ended while still inside a tag
         raise ValueError('found < without matching >')
     return tags
