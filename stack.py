@@ -29,7 +29,8 @@ def balanced_parens(text):
     False
     '''
     stack = []
-    for char in text:
+    for i, char in enumerate(text):
+        print('char =', char)
         if char in '([{':
             stack.append(char)
         elif char in ')]}':

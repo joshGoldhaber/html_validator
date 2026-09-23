@@ -29,3 +29,20 @@ def _extract_tags(html):
     >>> _extract_tags('Python <strong>rocks</strong>!')
     ['<strong>', '</strong>']
     '''
+    tags = []
+    current = None
+    for char in html:
+        if char == '<':
+            if current is not None:
+                raise ValueError('found < without matching >')
+            current = ''
+        elif char == '>':
+            if current is not None:
+                name = current.split()[0] if current.strip() else ''
+                tags.append('<' + name + '>')
+                current = None
+        elif current is not None:
+            current += char
+    if current is not None:
+        raise ValueError('found < without matching >')
+    return tags
