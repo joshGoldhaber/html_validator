@@ -11,7 +11,6 @@ def validate_html(html):
     False
     '''
 
-
     # HINT:
     # use the _extract_tags function below to generate a list of html tags without any extra text;
     # then process these html tags using the balanced parentheses algorithm from the stack.py file.
