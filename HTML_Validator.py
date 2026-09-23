@@ -60,12 +60,11 @@ def _extract_tags(html):
             current = ''
         elif char == '>':
             if current is not None:
-                # keep only the tag name and throw away any attributes
                 name = current.split()[0] if current.strip() else ''
                 tags.append('<' + name + '>')
                 current = None
         elif current is not None:
             current += char
-    if current is not None:             # string ended while still inside a tag
+    if current is not None:
         raise ValueError('found < without matching >')
     return tags
