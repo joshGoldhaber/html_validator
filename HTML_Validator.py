@@ -9,35 +9,28 @@ def validate_html(html):
     True
     >>> validate_html('<strong>example')
     False
+    >>> validate_html('<strong>python <u>is </strong> awesome </u>')
+    False
+    >>> validate_html('this is a <a href="https://izbicki.me">link</a>')
+    True
     '''
     try:
         tags = _extract_tags(html)
     except ValueError:
         return False
 
-    s = []
-    balanced = True
-    index = 0
-    while index < len(tags) and balanced:
-        tag = tags[index]
+    stack = []
+    for tag in tags:
         if not tag.startswith('</'):
-            s.append(tag)
+            stack.append(tag)
         else:
-            if len(s) == 0:
-                balanced = False
-            else:
-                top = s.pop()
-                if not _matches(top, tag):
-                    balanced = False
-        index = index + 1
+            # the matching opening tag is the closing tag without the slash
+            opening_tag = '<' + tag[2:]
+            if len(stack) == 0 or stack[-1] != opening_tag:
+                return False
+            stack.pop()
 
-    return balanced and len(s) == 0
-
-    # HINT:
-    # use the _extract_tags function below to generate a list of html tags without any extra text;
-    # then process these html tags using the balanced parentheses algorithm from the stack.py file.
-    # The main difference between your code and the code from class will be that you will have to keep track of not just the 3 types of parentheses,
-    # but arbitrary text located between the html tags.
+    return len(stack) == 0
 
 
 def _extract_tags(html):
@@ -50,6 +43,13 @@ def _extract_tags(html):
 
     >>> _extract_tags('Python <strong>rocks</strong>!')
     ['<strong>', '</strong>']
+
+    Any attributes inside a tag are removed, so only the tag name is kept.
+
+    >>> _extract_tags('<a href="https://izbicki.me">link</a>')
+    ['<a>', '</a>']
+    >>> _extract_tags('<span class=bold id=test></span>')
+    ['<span>', '</span>']
     '''
     tags = []
     current = None
@@ -60,6 +60,7 @@ def _extract_tags(html):
             current = ''
         elif char == '>':
             if current is not None:
+                # keep only the tag name and throw away any attributes
                 name = current.split()[0] if current.strip() else ''
                 tags.append('<' + name + '>')
                 current = None

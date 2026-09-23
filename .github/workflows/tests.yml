@@ -8,12 +8,12 @@ jobs:
   tests:
     strategy:
       matrix:
-        python: [3.14]
+        python: ['3.14']
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python ${{matrix.python}}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{matrix.python}}
       - name: Install dependencies
@@ -27,3 +27,6 @@ jobs:
       - name: Run tests
         run: |
           python -m pytest
+      - name: Run doctests
+        run: |
+          python -m doctest HTML_Validator.py stack.py
